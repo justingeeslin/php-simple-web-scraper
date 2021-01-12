@@ -41,6 +41,35 @@ class Scraper_html extends Scraper_Base {
             $_oResponse = $_oBrowser->get( $this->_aBaseArguments[ 'url' ] );
             $_sContent  = $_oResponse->getContent();
             if ( $_oResponse->getStatus()&& $_sContent ) {
+
+                if (isset($_REQUEST['bannerimage'])) {
+                    // echo "image only mode!";
+                    // Modify content here..
+                    error_reporting(E_ERROR | E_PARSE);
+                    $doc = new \DOMDocument();
+                    $doc->loadHTML($_sContent);
+
+                    /* Create a new XPath object */
+                    $xpath = new \DomXPath($doc);
+                    
+                    $nodes = $xpath->query("/html/body/div/div/div[3]/div/div[1]/div[1]/div");
+                     
+                    $output = "";
+                    foreach ($nodes as $i => $node) {  
+                        // $node->removeAttribute('class');                  
+                        // $output = $doc->saveHTML($node);
+                        $output .= $node->getAttribute('style');
+                        $output = str_replace('background-image:url(', '', $output);
+                        $output = str_replace(')', '', $output);
+                        // Replace the image html
+                        // $output = str_replace('<div height="[object Object]" style="background-image:url(', '', $output);
+                        // $output = str_replace(')\'" class="sc-fzoxnE iOpsHV"></div></div></div>', '', $output);
+                    }
+                    // echo $output;
+                    return $output;
+                }
+
+                
                 return $_sContent;
             }
             // Error
