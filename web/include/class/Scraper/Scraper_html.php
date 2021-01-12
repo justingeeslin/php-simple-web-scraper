@@ -58,15 +58,22 @@ class Scraper_html extends Scraper_Base {
                     foreach ($nodes as $i => $node) {  
                         // $node->removeAttribute('class');                  
                         // $output = $doc->saveHTML($node);
-                        $output .= $node->getAttribute('style');
-                        $output = str_replace('background-image:url(', '', $output);
-                        $output = str_replace(')', '', $output);
+                        $imageURL .= $node->getAttribute('style');
+                        $imageURL = str_replace('background-image:url(', '', $imageURL);
+                        $imageURL = str_replace(')', '', $imageURL);
+
+                        $image = file_get_contents($imageURL);
+
+                        header('Content-type: image/jpeg;');
+                        header("Content-Length: " . strlen($image));
+                        // echo $image;
+                        return $image;
                         // Replace the image html
                         // $output = str_replace('<div height="[object Object]" style="background-image:url(', '', $output);
                         // $output = str_replace(')\'" class="sc-fzoxnE iOpsHV"></div></div></div>', '', $output);
                     }
                     // echo $output;
-                    return $output;
+                    // return $image;
                 }
 
                 
